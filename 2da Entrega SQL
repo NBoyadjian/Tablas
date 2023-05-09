@@ -1,0 +1,1807 @@
+CREATE DATABASE purinky_dw;
+
+USE purinky_dw;
+
+  # CREACIÓN DE TABLAS
+CREATE TABLE proveedores(
+	id_proveedores INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL, 
+    apellido VARCHAR(30) NOT NULL,
+    razón_social VARCHAR(45) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    cuit CHAR(11) NOT NULL UNIQUE,
+    email VARCHAR(45),
+    web VARCHAR(45),
+    teléfono VARCHAR(20),
+    domicilio VARCHAR(30) NOT NULL,
+    localidad INT NOT NULL,
+    insumos INT NOT NULL
+);
+
+CREATE TABLE insumos(
+	id_insumos INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    sector INT NOT NULL
+);
+
+CREATE TABLE empleados(
+	id_empleados INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    cuit CHAR(11) NOT NULL UNIQUE,
+    salario DECIMAL(8, 2) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
+    teléfono VARCHAR(20) NOT NULL,
+    domicilio VARCHAR(30),
+    localidad INT NOT NULL,
+    sector INT NOT NULL
+);
+
+CREATE TABLE productos(
+	id_productos INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    denominación INT NOT NULL,
+    artículo INT NOT NULL,
+    precio_unitario DECIMAL(6, 2) NOT NULL,
+    costo_unitario DECIMAL(6, 2) NOT NULL
+);
+
+CREATE TABLE ventas(
+	id_ventas INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fecha DATE NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL,
+    cantidad INT NOT NULL,
+	descuentos DECIMAL(3, 2) DEFAULT 0,
+    clientes INT NOT NULL,
+    productos INT NOT NULL,
+    stock INT NOT NULL,
+    viajantes INT NOT NULL
+);
+    
+CREATE TABLE clientes(
+	id_clientes INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    fecha_nacimiento DATE NOT NULL,
+    email VARCHAR(45),
+    teléfono VARCHAR(30) NOT NULL,
+    cuit CHAR(11) NOT NULL UNIQUE,
+    domicilio VARCHAR(30) NOT NULL,
+    localidad INT NOT NULL,
+    viajante INT NOT NULL
+);
+
+CREATE TABLE facturación_ventas(
+	id_facturación_ventas INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    cliente INT NOT NULL,
+    nota_de_crédito INT DEFAULT 0,
+    nota_de_débito INT DEFAULT 0,
+    cheques INT DEFAULT 0,
+    transacciones INT NOT NULL,
+    composición_de_deuda DECIMAL(10, 2) DEFAULT 0
+);
+
+CREATE TABLE facturación_proveedores(
+	id_facturación_proveedores INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    proveedor INT NOT NULL,
+    pagos INT NOT NULL,
+    nota_de_crédito INT DEFAULT 0,
+    nota_de_débito INT DEFAULT 0,
+    cheques INT DEFAULT 0,
+    transacciones INT NOT NULL,
+    composición_de_deuda DECIMAL(10, 2) DEFAULT 0
+);
+
+CREATE TABLE facturación_aparadores(
+	id_facturación_aparadores INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    aparador INT NOT NULL,
+    pagos INT NOT NULL,
+    nota_de_crédito INT DEFAULT 0,
+    nota_de_débito INT DEFAULT 0,
+    cheques INT DEFAULT 0,
+    transacciones INT NOT NULL,
+    composición_de_deuda DECIMAL(10, 2) DEFAULT 0
+);
+
+CREATE TABLE aparadores(
+	id_aparador INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    razón_social VARCHAR(45) NOT NULL,
+    cuit CHAR(11) NOT NULL UNIQUE,
+    domicilio VARCHAR(30) NOT NULL,
+    localidad INT NOT NULL,
+    insumos INT NOT NULL,
+    PRIMARY KEY(id_aparador)
+);
+
+CREATE TABLE sectores(
+	id_sector INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    PRIMARY KEY(id_sector)
+);
+
+CREATE TABLE viajantes(
+	id_viajante INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    apellido VARCHAR(30) NOT NULL,
+    dni INT NOT NULL UNIQUE,
+    cuit CHAR(11) NOT NULL UNIQUE,
+    fecha_nacimiento DATE NOT NULL,
+	email VARCHAR(45),
+    teléfono VARCHAR(20) NOT NULL,
+    salario DECIMAL(8, 2) NOT NULL,
+    domicilio VARCHAR(30) NOT NULL,
+    localidad INT NOT NULL,
+    zona INT NOT NULL,
+    PRIMARY KEY(id_viajante)
+);
+
+CREATE TABLE stock(
+	id_stock INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id_stock)
+);
+
+CREATE TABLE provincia(
+	id_provincia INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+	PRIMARY KEY(id_provincia)
+);
+
+CREATE TABLE localidades(
+	id_localidad INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    provincia INT NOT NULL,
+    PRIMARY KEY(id_localidad)
+);
+
+CREATE TABLE talles(
+	id_talle INT NOT NULL AUTO_INCREMENT,
+    número INT NOT NULL,
+    PRIMARY KEY(id_talle)
+);
+
+CREATE TABLE denominaciones(
+	id_denominación INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(30) NOT NULL,
+    PRIMARY KEY(id_denominación)
+);
+
+CREATE TABLE artículos(
+	id_artículo INT NOT NULL AUTO_INCREMENT,
+    número VARCHAR(30) NOT NULL,
+    talle INT NOT NULL,
+    PRIMARY KEY(id_artículo)
+);
+
+CREATE TABLE zonas(
+	id_zona INT NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(50) NOT NULL,
+    PRIMARY KEY(id_zona)
+);
+
+CREATE TABLE AUDITS_ventas(
+	id_log INT PRIMARY KEY AUTO_INCREMENT,
+    entity VARCHAR(100),
+    entity_id INT,
+    insert_dt DATETIME,
+    created_by VARCHAR(100),
+    last_update_dt DATETIME,
+    last_updated_by VARCHAR(100)
+);
+
+# INSERCIÓN DE REGISTROS EN RESPECTIVAS TABLAS
+INSERT INTO insumos (id_insumos, nombre, sector) VALUES
+(NULL, 'pvc', 3),
+(NULL, 'cordones', 5),
+(NULL, 'ojalillos', 4),
+(NULL, 'elásticos', 4),
+(NULL, 'abrojo', 5),
+(NULL, 'trencilla', 3),
+(NULL, 'plástico', 2),
+(NULL, 'metal', 1),
+(NULL, 'goma', 5),
+(NULL, 'hilo', 3),
+(NULL, 'tela', 5);
+
+INSERT INTO sectores (id_sector, nombre) VALUES
+(NULL, 'expedición'),
+(NULL, 'corte'),
+(NULL, 'preaparadores'),
+(NULL, 'ensamblaje'),
+(NULL, 'bordado');
+
+INSERT INTO zonas (id_zona, nombre) VALUES
+(NULL, 'Cuyo'),
+(NULL, 'Patagonia'),
+(NULL, 'Centro'),
+(NULL, 'Noroeste'),
+(NULL, 'Norte'),
+(NULL, 'Sur'),
+(NULL, 'Mesopotamia'),
+(NULL, 'Meseta'),
+(NULL, 'Pampeana'),
+(NULL, 'Cordillera');
+
+INSERT INTO stock (id_stock, nombre) VALUES
+(NULL, 'Expedición'),
+(NULL, 'Devolución'),
+(NULL, 'Falla');
+
+/*
+-- Query: SELECT * FROM proveedores
+-- Date: 2023-04-28 19:02
+*/
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (1,'Iris','BaÃ±os Perez','Baskonia Center SAS',34328642,'20045445934','hermanab@optonline.net','365games.es','5284368374635','AV. INDEPENDENCIA NO 241',34,5);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (2,'Samanta','Lago Solano','Distribuidora Koruk SA',31643135,'20044775191','','abacocioycultura.es','5239734978933','AV. INDEPENDENCIA NO 779',156,2);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (3,'Guiomar','Ugarte','Avedis Hnos. SRL',35241269,'20044705606','cameron@aol.com','','5211175748333','AV. 20 DE NOVIEMBRE NO1024',140,9);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (4,'Baltasar Sosimo','Canton Rojas','Powermeter SAS',4930135,'20044390680','cgreuter@yahoo.com','achabab.es','5209385029839','CARRETERA A LOMA ALTA 656',34,1);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (5,'Nazaret','Diaz Mendizabal','Trendy Girls SA',8018603,'20043817818','jrifkin@verizon.net','adolfodominguezes.com','5233398987345','AV. 20 DE NOVIEMBRE 1060',34,3);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (6,'Reyes','Campoy Abril','Fashion & Pretty SRL',35542153,'20043768787','parsimony@comcast.net','','5294848732733','CALLE ZARAGOZA NO 1010',156,6);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (7,'Josep','del Reina','La closeterÃ­aSA',17037523,'20043573579','','anibalferron.es','5256086967111','CALLE MATAMOROS NO 310',110,7);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (8,'Melania','Belda Rubio','Studio Chic SAS',32238035,'20042507157','druschel@yahoo.ca','artemorales.es','5200482090949','AV. 20 DE NOVIEMBRE NO 859',34,4);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (9,'Berta','de Tomas','Cool Store SRL',21355847,'20028938471','bdthomas@comcast.net','artesyredesdelsur.es','5284838340049','AV. 20 DE NOVIEMBRE NO 1053',110,8);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (10,'Fabricio','Berto','Deitres SA',27891076,'20028618471','','deitres.com','5284401340049','Av. Alvarez Jonte 901',34,10);
+INSERT INTO proveedores(`id_proveedores`,`nombre`,`apellido`,`razón_social`,`dni`,`cuit`,`email`,`web`,`teléfono`,`domicilio`,`localidad`,`insumos`) VALUES (11,'Joaquin','Cimadomo','Block SRL',31870471,'21992768787','','block.com.ar','5284838560149','Av. Montes De Oca 1500 4 H',34,11);
+
+/*
+-- Query: SELECT * FROM empleados
+-- Date: 2023-04-28 19:07
+*/
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (1,'Luis','Rivero ',13789821,'30711342814',85000.00,'1970-10-24','11064715262887','COL.CENTRO TUXTEPEC.OAX.',34,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (2,'Jorge','Romero',4412351,'30711335672',99000.00,'1991-04-25','1184745857816','AV. INDEPENDENCIA NO. 409',48,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (3,'Teresa','Roca',32561749,'30711325596',140000.00,'1989-06-14','1124349724876','AV. INDEPENDENCIA NO. 409',50,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (4,'Martina','Garay',39299228,'30711307334',150000.00,'1977-04-19','1104392268727','INDEPENDENCIA NO. 409',64,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (5,'Ursula','Aguirre',30529784,'30711306958',65000.00,'1983-02-14','119559602942','CALLE MATAMOROS NO. 415',34,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (6,'Fernando','Zabaleta',34280361,'30711298750',120000.00,'1989-09-06','1176530584376','AV. 5 DE MAYO NO. 2061 ',50,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (7,'German','Nusia',31723513,'30711295646',488000.00,'1989-05-21','1144326579166','AV. JESUS CARRANZA NO. 812',140,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (8,'Sebastian','Lacasia',32140543,'30711292418',90000.00,'1969-07-26','119512387928','C. GUADALUPE VICTORIA N0.373',127,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (9,'Daniela','Protti',20389594,'30711274649',90000.00,'1974-04-17','1102794247863','VICTORIA NO 373',110,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (10,'Evelyn','Zanabria',29323620,'30711264473',85000.00,'1992-09-16','1133506053277','AV. CARRANZA NO.1063',101,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (11,'Luciano','Lopez',31265986,'30711253617',85000.00,'1977-01-06','115630368152','AV. INDEPENDENCIA NO. 246',127,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (12,'Tomas','Nieto',26352415,'30711252173',110000.00,'1969-10-01','113370421746','BLVD. BENITO JUAREZ NO 2222',101,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (13,'Matias','Iglesias',33234422,'30711245355',112500.00,'1969-12-28','119037059024','IGNACIO ZARAGOZA NO 303',140,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (14,'Juan Francisco','Cosentino',11935227,'30711244561',114500.00,'1988-02-06','118908221609','MIGUEL HIDALGO NO 689',34,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (15,'Liliana','Hernandez',33135085,'30711242933',171500.00,'1976-07-04','11519364576946','BLVD. BENITO JUAREZ NO 568',48,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (16,'Roberto','Fernandez',12407064,'30711219044',69000.00,'1980-07-26','1147705835668','AV. 20 DE NOVIEMBRE NO 1371',50,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (17,'Cristian','Gabrielli',34052454,'30711213453',89000.00,'1977-07-09','11297099755212','AV. 20 DE NOVIEMBRE NO 822',64,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (18,'Daniela','Nouchi',24284114,'30711208573',95000.00,'1993-09-18','11175532048873','AV. 5 DE MAYO NO 1721',34,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (20,'Marcos','Barone',25698785,'30711392965',99000.00,'1978-02-15','116859115348','AV. INDEPENDENCIA NO. 776',140,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (21,'Cecilia','Vazquez',11496916,'20075900377',85600.00,'1982-10-27','1186208922533','BLVD. BENITO JUAREZ NO 1466',127,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (22,'Roman','Iutch',26628099,'20075947691',97500.00,'1997-11-13','119431999349','CALLE MATAMOROS NO 280',110,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (23,'Cristian','Copetti',28619955,'20076966444',160530.00,'1994-06-20','1154923895493','AV. INDEPENDENCIA NO 545',101,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (24,'Mariano','Miranda',29226865,'20077125133',88500.00,'1991-08-10','1125092630950','AV. INDEPENDENCIA NO 128',140,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (25,'Natalia','Vargas',29449209,'20078489422',135900.00,'1988-11-13','11443398890180','CALLE MATAMOROS NO 127',140,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (26,'Ricardo','Zini',22703107,'20079683656',211000.00,'1991-10-28','11301778860401','AV.INDEPENDENCIA NO1010',50,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (27,'Diana','Ballesteros',23184773,'20080317248',78500.00,'1970-09-14','1151256356245','AV. 5 DE MAYO NO 1652',127,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (28,'Laura','Fernandez',27041529,'20081219339',98600.00,'1968-12-05','116448356534','AV. 5 DE MAYO NO 1108',34,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (29,'Sebastian','Grecco',33652369,'20082575503',176500.00,'1997-12-28','1195963686642','AV. INDEPENDENCIA NO 748',48,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (30,'German','Oscato',17973562,'20082960008',155300.00,'1988-11-20','110844519857','AV. INDEPENDENCIA NO 985 A',50,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (31,'Julia','Mengolini',27451433,'20084063151',88900.00,'1969-02-23','111348143040','AV. INDEPENDENCIA NO 985 A',64,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (32,'Rupina','Castellano',29996758,'20084292282',163000.00,'1987-12-28','1119932931285','BLVD. BENITO JUAREZ 26',34,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (33,'Diego','San Juan',245693657,'20084441466',77400.00,'1992-12-22','11046587651475','MATAMOROS NO 149',50,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (34,'Anush','Velez',34633758,'20085293460',98640.00,'1995-02-23','11808271014955','AV. 5 DE MAYO NO 1100 A',140,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (35,'Ricardo','Pardo',94582785,'20086323118',88250.00,'1988-07-16','114045698464','AV. 20 DE NOVIEMBRE NO 1540',127,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (36,'Alejandro','Velliz',38731825,'20086342813',87600.00,'1987-01-15','118937646864','AV. 5 DE MAYO NO 1253',110,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (37,'Pablo','Gomez',33820158,'20087039316',190540.00,'1979-01-30','117661985089','CALLE OCAMPO NO 14',101,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (38,'Gonzalo','Centurion',39700861,'20087063357',133640.00,'1988-07-10','1149469958796','BLVD. BENITO JUAREZ 20',34,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (39,'Mariana','Zuculini',32163776,'20100472458',152600.00,'1998-08-16','1132272737457','CALLE ALDAMA NO 156',34,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (40,'Maria','Buljubasich',5137748,'20100978637',86400.00,'1969-04-09','111703408377','AV. INDEPENDENCIA NO 145',101,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (41,'Jose','Perinovich',23569719,'20112208489',93200.00,'1986-05-19','1125125558521','COCHABAMBA 456',34,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (42,'Fernando','Repkin',25986531,'20112477579',91000.00,'1986-04-23','1168760230375','EL ROVADOR 989',48,2);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (43,'Cristina','Tramper',29654123,'20114301222',146300.00,'1996-06-23','1159134946102','AV. RIVADAVIA 561 PB',50,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (44,'Fernanda','Moreno',27500636,'20115745329',122000.00,'1989-10-17','1197915987599','ACOYTE 533',64,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (45,'Lautaro','Nardoni',24635123,'20120334019',96450.00,'2000-02-24','11036625969454','RIOBAMBA 9000',34,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (46,'Rodrigo','Vallejo',28569963,'20120380959',78900.00,'1981-12-27','117534024284','AV CASEROS 561',50,1);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (47,'Giovanni','Civiello',30156247,'20122069371',88600.00,'1974-08-03','115949085658','AV CORRIENTES 5599 4 A',140,4);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (48,'Alexis','Balassone',32211452,'20122294324',153230.00,'1979-06-30','115490607120','AV CABILDO 563 PB',127,3);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (49,'Jimena','Reta',33236652,'20122774830',146000.00,'1972-05-27','1133125775724','SUIPACHA 639 4 C',110,5);
+INSERT INTO empleados(`id_empleados`,`nombre`,`apellido`,`dni`,`cuit`,`salario`,`fecha_nacimiento`,`teléfono`,`domicilio`,`localidad`,`sector`) VALUES (50,'Pamela','Clapto',28500456,'20123175949',78900.00,'1999-02-13','11004661380350','ELCANO 1133',101,5);
+
+/*
+-- Query: SELECT * FROM aparadores
+-- Date: 2023-04-28 19:12
+*/
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (1,'La Ramada AC','Hiram Mimendi Bucio','30500009442','COL. CENTRO TUX',34,2);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (2,'El Cuartito','Tiendas Chedraui S.A.','33999181819','BLVD. BENITO JUAREZ NO 1291',50,3);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (3,'RCT','Jose J. Octavio Porras Garcia','30500008454','AV. 20 DE NOVIEMBRE NO 970 B',110,9);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (4,'Greep','Ines Alcantara Flores','30500012990','CALLE MORELOS NO 426',110,10);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (5,'Varo Varo','Trinidad Vazquez Montane','30500098801','PROL. AV. 5 DE MAYO NO 270',110,3);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (6,'Olivares Tuertos','Rosalia Murguia Hernandez','30500012516','LIBERTAD NO 2005',50,9);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (7,'Magazine','Tiendas Chedraui S.A.','30500010602','BOULEVARD JUAREZ 1291',34,9);
+INSERT INTO aparadores(`id_aparador`,`nombre`,`razón_social`,`cuit`,`domicilio`,`localidad`,`insumos`) VALUES (8,'Arkham','Raul Hernandez Alfaro','30500014047','20 DE NOVIEMBRE NO 1081',50,2);
+
+/*
+-- Query: SELECT * FROM artículos
+-- Date: 2023-04-29 18:03
+*/
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (1,'12',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (2,'14',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (3,'16',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (4,'18',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (5,'19',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (6,'32',5);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (7,'34',5);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (8,'37',5);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (9,'43',7);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (10,'154',2);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (11,'310',6);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (12,'500',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (13,'535',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (14,'600',4);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (15,'620',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (16,'640',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (17,'655',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (18,'660',1);
+INSERT INTO artículos(`id_artículo`,`número`,`talle`) VALUES (19,'980',3);
+
+/*
+-- Query: SELECT * FROM clientes
+-- Date: 2023-04-29 18:10
+*/
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (1,'Inmaculada','Viana Grau',27946708,'1992-10-02','kristian_siempre_azul@hotmail.com','349596067408','20171421145','COL. CENTRO TUXTEPEC',9,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (2,'Andres Felipe','Duarte Segura',16152349,'2015-02-01','mapuchin@hotmail.com','349526888904','20172243259','AV. INDEPENDENCIA NO. 565-A',34,6);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (3,'Malena','Arcisez Cid',18207021,'1999-04-02','arahuetes@manquehue.net','349544763055','20172791906','AV. LIBERTAD NO. 956',140,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (4,'Florentino','Sabater Llobet',26054382,'2013-11-12','eduardo.arancibia@grange.cl','349512201808','20174969818','AV. LIBERTAD NO. 897',127,7);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (5,'Graciela','Aguilo Chaparro',53631896,'2001-08-09','martacam2002@yahoo.com','349558461149','20175114395','PRINCIPAL S/N. TEMAZCAL.',50,10);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (6,'Cintia','Camacho Alcalde',21356010,'1983-01-04','andrea.geoplanet@gmail.com','349539384751','20175681222','HIDALGO NO. 96',700,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (7,'Maricela Elisabet','Lozano Gallardo',33278756,'1987-03-07','faraya1910@hotmail.com','349567608939','20176113112','CALLE HIDALGO NO.96',650,1);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (8,'Emilia','Barbera Conesa',13789821,'2014-07-01','faraya@sprint.cl','349510975822','20176621320','AV. INDEPENDENCIA NO. 1457',22,3);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (9,'Sosimo','Alegria',4412351,'2001-10-24','leonor.araya@gmail.com','349536920968','20177899543','AV. 5 DE MAYO NO. 551',34,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (10,'Fidela Azeneth','Naranjo Zaragoza',32561749,'1981-02-06','paulifran@hotmail.com','349534550311','20179444152','CALLE ALDAMA NO. 99',796,8);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (11,'Maximo','Requena Vilaplana',39299228,'2003-01-03','bad.girl.-@hotmail.es','349504016114','20182012085','AV. 20 DE NOVIEMBRE NO. 1121',50,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (12,'Fanny ','Bilbao Acosta',40483768,'1988-12-22','aargomedo@hecsa.cl','349596999582','20182200248','AV. 5 DE MAYO NO. 1953',50,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (13,'Elvira','Guillen Chaparro',34280361,'2015-02-15','aargomedo@hecsa.cl','349578512977','20185523927','CALLE ALDAMA NO.720',50,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (14,'Regulo','Quintana Carnero',11723513,'2010-05-18','elizabetharmstrong39@gmail.com','349509229731','20188610057','AV. 18 DE MARZO',50,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (15,'Adelardo','Pedrero Villalobos',11140543,'2003-10-14','c_arnes@hotmail.com','349542712401','20200274319','CALLE ALDAMA NO. 144-A',759,10);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (16,'Leonel','Ugarte Palomar',10389594,'1979-06-13','aarriagada@petrok.cl','349569637488','20200549032','BLVD. BENITO JUARE 1291',85,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (17,'Atilio','Gallardo Godoy',29323620,'1993-07-05','joy_pao_@hotmail.com','349586487319','20203326298','AV. 20 DE NOVIEMBRE 970 B',34,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (18,'Rosalva','Alfonso Ferrandiz',5137514,'2004-11-08','carlosarteaga.pef@gmail.com','349583428799','20204204021','CALLE MORELOS NO.426',140,1);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (19,'Jordan','Llobet',8015552,'1988-07-28','arquitectoasenjo@gmail.com','349530077040','20205764772','PROL. AV. 5 DE MAYO NO. 270',127,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (20,'Edelmiro','Morcillo',33234422,'2009-07-23','masenjog@gmail.com','349588657206','20206725320','LIBERTAD NO. 2005',50,7);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (21,'Juana','Marcet',28740858,'1993-10-04','vkunstmann@gmail.com','021-6683523','20207274632','AV. CORRIENTES 5341 3 A',22,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (22,'Roman','Ruglio',29651813,'1982-04-26','rlabarcajaque@gmail.com','102-9432576','20211697459','RIOBAMBA 121',34,7);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (23,'Micaela','Copacab',28693546,'1993-12-17','carmenluzlabbe@gmail.com','591-7022473','20217795185','LAS HERAS 569',56,7);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (24,'Natalia','Revishvilli',27593145,'1994-04-02','escobilla3carretes@hotmail.com','894-7399770','20218342249','AV. JUJUY 2712',98,8);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (25,'Julian','Trezza',36951236,'1985-04-03','constructor77@gmail.com','902-3371927','20218866086','AV CABILDO 5563',88,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (26,'Lautaro','Polenta',31248963,'1996-02-14','jlance60@bancoestado.cl','359-6843111','20220224539','AV. CALLAO 563',34,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (27,'Diego','Aguirregaray',24569365,'1995-03-15','glazo@mbienes.cl','594-5812992','20220440525','IRIARTE 831',140,10);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (28,'Hernan','Vasquez',28569235,'1991-05-21','llazo@agrical.cl','162-9722416','20221262396','HIDALGO 697',127,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (29,'marcos','OrdoÃ±ez',27541859,'1984-02-13','amarantasol@gmail.com','027-5596712','20222057826','ACOYTE 733',50,1);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (30,'Rodrigo','Belluschi',29365012,'1983-04-29','rlillo_2000@hotmail.com','574-7047339','20226025147','COL. LAZARO CARDENAZ TUXT',598,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (31,'Daniela','MacAllister',35622147,'1984-01-18','dlineros@uc.cl','686-9010601','20227352494','AV. 20 DE NOV. NO. 1372',34,3);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (32,'Silvia','Rikpert',34987624,'1991-12-10','monica@arrigoni.cl','863-7318574','20227898101','AV. 5 DE MAYO NO.1380',140,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (33,'Marina','Solomillo',31254987,'1981-12-29','plizama@mediplex.cl','223-6070966','20228250075','AV. INDEPENDENCIA NO.117',127,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (34,'Rita','Izquierdoz',28651789,'1981-11-29','kresimirljubetic@vtr.net','358-4645733','20228493423','-145407',50,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (35,'Federico','Fabra',24698351,'1988-07-06','flobato.c@gmail.com','717-8026559','20229907752','INDEPENDENCIA 85',31,1);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (36,'Sebastian','Montillo',26357951,'1995-03-11','hpjlr@hotmail.com','958-6673256','20230848913','DANIEL SOTO NO.370',77,4);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (38,'Ruben','Romagnoli',24698320,'1985-10-24','crilofer63@gmail.com','482-6472352','20232057778','AV. INDEPENDENCIA NO. 413',56,10);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (39,'Ximena','Dicranian',29653201,'1994-08-19','lexischile@gmail.com','485-1287870','20232092042','CALLE OCAMPO NO.420',96,6);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (40,'Julia','Mansilla',36985568,'1984-06-14','juanmaceratta@hotmail.com','022-8564758','20234147189','AV. INDEPENDENCIA NO. 718',140,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (41,'Dorina','Gareca',28964312,'1991-08-17','cmandak@vtr.net','108-9776878','20234892127','AV. 1O. DE MAYO NO. 29',127,5);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (42,'Martin','Billups',29653214,'1981-04-19','c.marambiomelis@gmail.com','348-9697378','20240495660','CALLE ALDAMA NO.233-A',50,6);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (43,'Mariano','Chauncey',35696123,'1984-10-09','emarfil@bancochile.cl','061-7082953','20242935552','AV. FERROCARRIL S/N.',753,9);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (44,'Simon','Nantes',31023603,'1989-11-28','cmartina@uai.cl','336-1948821','20243720053','AV. 5 DE MAYO NO.1544',456,7);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (45,'Luca','Matos',27024693,'1984-01-12','jmartinezcossio@gmail.com','019-9827688','20245771410','MATAMOROS No. 138',98,10);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (46,'Nicolas','Urzaiz',29653012,'1992-02-26','p.martinez.lillo@gmail.com','953-8823127','20247813986','AV. 20 DE NOVIEMBRE No. 1037',653,2);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (47,'Ruben','Barbona',24563021,'1987-09-28','melisherman@hotmail.com','894-3726957','20249230120','AV. 20 DE NOVIEMBRE No. 1037',711,1);
+INSERT INTO clientes(`id_clientes`,`nombre`,`apellido`,`dni`,`fecha_nacimiento`,`email`,`teléfono`,`cuit`,`domicilio`,`localidad`,`viajante`) VALUES (48,'Carlos','Bacca',27898530,'1981-04-03','aylincita11@hotmail.com','478-6454284','20249627209','CALLE SEBASTIAN ORTIZ NO.549',200,3);
+
+/*
+-- Query: SELECT * FROM denominaciones
+-- Date: 2023-04-29 18:21
+*/
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (1,'Jaguar Azul');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (2,'Jirafa Beige');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (3,'Camuflado Gris');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (4,'Cauflado Verde');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (5,'Corazon Negro');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (6,'Corazon Rojo');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (7,'Dino Azul');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (8,'Dino Multicolor');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (9,'Dino Verde');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (10,'Poke Fucsia');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (11,'Futbol');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (12,'Gatitos');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (13,'Perrito Gris');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (14,'Sol Naranja');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (15,'Cielo Negro');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (16,'Termo Oro');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (17,'Panda');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (18,'Lobo Plata');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (19,'Amargo Rojo');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (20,'Delfin Rosa');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (21,'Skate');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (22,'Unicornio Blanco');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (23,'Unicornio Fucsia');
+INSERT INTO denominaciones(`id_denominación`,`nombre`) VALUES (24,'Pastito Verde');
+
+/*
+-- Query: SELECT * FROM facturación_aparadores
+-- Date: 2023-04-29 18:24
+*/
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (1,6,57000,10000,0,32000,2,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (2,4,25000,0,0,17000,6,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (3,1,59000,0,0,15000,9,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (4,2,25000,0,0,16000,4,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (5,3,69500,0,0,7500,5,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (6,8,28900,0,0,21900,7,15000.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (7,7,31980,5000,0,12600,8,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (8,5,13670,0,0,0,2,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (9,6,8500,0,0,0,3,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (10,8,17500,2500,0,0,8,10000.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (11,1,36000,12000,0,0,1,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (12,2,42000,8000,9000,11500,4,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (13,3,15000,5500,0,0,5,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (14,6,32000,16000,0,0,85,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (15,8,26000,7000,4500,12600,6,0.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (16,4,27500,0,3200,13200,1,7500.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (17,5,19600,2500,1530,0,7,6500.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (18,1,21900,0,0,0,5,11000.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (19,2,25400,0,0,0,8,9000.00);
+INSERT INTO facturación_aparadores(`id_facturación_aparadores`,`aparador`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (20,7,16300,0,0,5600,2,5000.00);
+
+/*
+-- Query: SELECT * FROM facturación_proveedores
+-- Date: 2023-04-29 18:26
+*/
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (1,2,56000,0,10000,21600,25,130000.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (2,7,75600,0,0,36000,12,16500.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (3,9,98000,0,0,17500,10,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (4,5,126300,0,0,0,9,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (5,3,156320,0,12500,0,8,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (6,4,220500,0,13600,56500,7,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (7,1,354200,15000,0,210000,6,120000.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (8,6,159300,19000,0,0,56,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (9,9,89500,0,0,45000,23,17500.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (10,4,365000,0,11600,120000,12,34800.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (11,7,248000,0,18500,150600,24,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (12,11,350000,0,0,120500,26,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (13,10,99500,0,0,35000,17,22500.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (14,11,77500,26000,0,41000,16,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (15,5,124500,13500,0,85000,5,19000.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (16,4,85600,0,0,22600,8,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (17,3,35600,0,0,12600,10,0.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (18,2,260300,0,0,150000,26,120000.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (19,1,215700,0,7500,126000,22,77500.00);
+INSERT INTO facturación_proveedores(`id_facturación_proveedores`,`proveedor`,`pagos`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (20,11,258963,17500,0,190000,14,0.00);
+
+/*
+-- Query: SELECT * FROM facturación_ventas
+-- Date: 2023-04-29 18:36
+*/
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (1,5,0,0,440782,16,385210.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (2,9,111320,20891,610000,40,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (3,18,0,0,65000,90,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (4,5,0,0,7400,18,1700.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (5,16,3780,0,0,20,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (6,32,17411,0,0,33,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (7,15,0,3490,50000,55,120000.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (8,19,20987,1750,40000,99,50000.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (9,22,0,39000,150500,19,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (10,27,11789,0,411890,104,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (11,26,30865,0,57800,37,310000.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (12,35,0,5000,742000,61,47000.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (13,39,44890,17000,175000,2,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (14,46,0,0,0,88,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (15,41,3200,0,0,10,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (16,12,0,0,61900,39,68900.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (17,8,39000,40000,57000,8,24100.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (18,14,0,7500,77890,5,0.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (19,21,0,7689,0,27,299000.00);
+INSERT INTO facturación_ventas(`id_facturación_ventas`,`cliente`,`nota_de_crédito`,`nota_de_débito`,`cheques`,`transacciones`,`composición_de_deuda`) VALUES (20,47,311980,0,478000,30,350100.00);
+
+/*
+-- Query: SELECT * FROM localidades
+-- Date: 2023-04-29 18:38
+*/
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (1,'Adolfo Gonzales Chaves',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (2,'Aguas Verdes',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (3,'Alberti',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (4,'Arenas Verdes',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (5,'Arrecifes',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (6,'Ayacucho',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (7,'Azul',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (8,'Bahia Blanca',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (9,'Bahia San Blas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (10,'Balcarce',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (11,'Balneario San Cayetano',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (12,'Baradero',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (13,'Benito Juarez',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (14,'Berisso',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (15,'Bolivar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (16,'Bragado',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (17,'Brandsen',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (18,'Campana',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (19,'CaÃ±uelas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (20,'Capilla del SeÃ±or',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (21,'Capitan Sarmiento',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (22,'Carhue',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (23,'Carilo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (24,'Carlos Casares',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (25,'Carlos Keen',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (26,'Carlos Tejedor',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (27,'Carmen de Areco',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (28,'Carmen de Patagones',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (29,'Castelli',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (30,'Chacabuco',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (31,'Chapadmalal',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (32,'Chascomus',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (33,'Chivilcoy',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (34,'Ciudad de Buenos Aires',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (35,'Claromeco',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (36,'Colon',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (37,'Coronel Dorrego',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (38,'Coronel Pringles',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (39,'Coronel Suarez',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (40,'Coronel Vidal',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (41,'Costa Azul',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (42,'Costa Chica',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (43,'Costa del Este',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (44,'Costa Esmeralda',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (45,'Daireaux',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (46,'Dolores',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (47,'Ensenada',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (48,'Escobar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (49,'Exaltacion de la Cruz',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (50,'Ezeiza',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (51,'Florentino Ameghino',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (52,'General Belgrano',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (53,'General Lamadrid',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (54,'General Las Heras',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (55,'General Lavalle',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (56,'General Madariaga',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (57,'General Pinto',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (58,'General Rodriguez',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (59,'General Villegas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (60,'Guamini',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (61,'Huanguelen',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (62,'Junin',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (63,'La Lucila del Mar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (64,'La Plata',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (65,'Las Flores',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (66,'Las Gaviotas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (67,'Las Toninas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (68,'Lincoln',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (69,'LoberÃ­a',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (70,'Lobos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (71,'Los Toldos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (72,'Lujan',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (73,'Magdalena',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (74,'Maipu',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (75,'Mar Azul',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (76,'Mar Chiquita',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (77,'Mar de Ajo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (78,'Mar de Cobo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (79,'Mar de las Pampas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (80,'Mar del Plata',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (81,'Mar del Sur',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (82,'Mar del Tuyu',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (83,'Marisol',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (84,'Medanos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (85,'Mercedes',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (86,'Miramar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (87,'Monte Hermoso',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (88,'Navarro',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (89,'Necochea',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (90,'Nueva Atlantis',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (91,'Nueve de Julio',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (92,'Olavarria',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (93,'Orense',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (94,'Oriente',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (95,'Ostende',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (96,'Pedro Luro',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (97,'Pehuajo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (98,'Pehuen Co',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (99,'Pergamino',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (100,'PigÃ¼e',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (101,'Pilar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (102,'Pinamar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (103,'Pinar del Sol',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (104,'Pipinas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (105,'Puan',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (106,'Punta Alta',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (107,'Punta Indio',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (108,'Punta Medanos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (109,'Quequen',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (110,'Quilmes',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (111,'Ramallo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (112,'Ranchos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (113,'Rauch',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (114,'Reta',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (115,'Rivadavia',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (116,'Rojas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (117,'Roque Perez',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (118,'Saavedra',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (119,'Saladillo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (120,'Saldungaray',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (121,'Salto',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (122,'San Andres de Giles',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (123,'San Antonio de Areco',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (124,'San Bernardo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (125,'San Cayetano',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (126,'San Clemente del Tuyu',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (127,'San Fernando',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (128,'San Isidro',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (129,'San Miguel del Monte',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (130,'San Nicolas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (131,'San Pedro',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (132,'Santa Clara del Mar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (133,'Santa Teresita',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (134,'Sierra de la Ventana',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (135,'Sierra de los Padres',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (136,'Sierras Bayas',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (137,'Suipacha',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (138,'Tandil',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (139,'Tapalque',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (140,'Tigre',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (141,'Tomas Jofre',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (142,'Tornquist',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (143,'Treinta de Agosto',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (144,'Trenque Lauquen',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (145,'Tres Arroyos',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (146,'Valeria del Mar',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (147,'Vedia',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (148,'Veinticinco de Mayo',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (149,'Veronica',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (150,'Vicente Casares',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (151,'Villa Gesell',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (152,'Villa La Arcadia',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (153,'Villa Serrana La Gruta',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (154,'Villa Ventana',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (155,'Villalonga',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (156,'Zarate',1);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (157,'Aconquija',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (158,'Alijilan',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (159,'Ancasti',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (160,'Andalgala',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (161,'Antofagasta',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (162,'Belen',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (163,'El Alto',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (164,'El Rodeo',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (165,'Fiambala',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (166,'IcaÃ±o',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (167,'La Paz',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (168,'La Puerta',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (169,'Las Juntas',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (170,'Paclin',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (171,'Poman',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (172,'Recreo',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (173,'San Fernando del Valle',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (174,'San Isidro',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (175,'Santa Maria',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (176,'Saujil',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (177,'Sumampa',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (178,'Tinogasta',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (179,'Villa Las Pirquitas',2);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (180,'Avia Terai',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (181,'Charata',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (182,'El Sauzalito',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (183,'Fuerte Esperanza',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (184,'Gancedo',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (185,'General Pinedo',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (186,'General San Martin',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (187,'General Vedia',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (188,'Hermoso Campo',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (189,'Isla del Cerrito',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (190,'Juan Jose Castelli',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (191,'Las BreÃ±as',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (192,'Machagai',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (193,'Mision Nueva Pompeya',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (194,'Pampa del Indio',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (195,'Puerto Tirol',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (196,'Resistencia',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (197,'Roque Saenz PeÃ±a',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (198,'Villa Angela',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (199,'Villa Rio Bermejito',3);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (200,'Alto RÃ­o Senguer',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (201,'BahÃ­a Bustamante',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (202,'Camarones',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (203,'Cholila',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (204,'Comodoro Rivadavia',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (205,'Corcovado',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (206,'El Hoyo',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (207,'El Maiten',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (208,'Epuyen',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (209,'Esquel',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (210,'Gaiman',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (211,'Gobernador Costa',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (212,'Jose de San Martin',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (213,'Lago Puelo',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (214,'Playa UniÃ³n',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (215,'Puerto Madryn',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (216,'Puerto Piramides',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (217,'Rawson',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (218,'Rada Tilly',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (219,'Rio Mayo',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (220,'Rio Pico',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (221,'Sarmiento',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (222,'Trelew',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (223,'Trevelin',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (224,'Villa Ameghino',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (225,'Villa Futalaufquen',4);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (226,'Achiras',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (227,'Aguas de Oro',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (228,'Alcira Gigena',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (229,'Almafuerte',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (230,'Alpa Corral',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (231,'Alta Gracia',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (232,'Amboy',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (233,'Anisacate',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (234,'Arroyito',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (235,'Arroyo de los Patos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (236,'Ascochinga',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (237,'Athos Pampa',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (238,'Balnearia',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (239,'Bell Ville',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (240,'Bialet Masse',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (241,'Cabalango',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (242,'Calmayo',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (243,'Capilla del Monte',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (244,'Casa Grande',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (245,'Cerro Colorado',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (246,'Charbonier',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (247,'Colonia Caroya',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (248,'Copacabana',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (249,'Cordoba Capital',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (250,'Cosquin',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (251,'Cruz Alta',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (252,'Cruz Chica',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (253,'Cruz del Eje',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (254,'Cruz Grande',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (255,'Cuesta Blanca',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (256,'Dean Funes',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (257,'Del Campillo',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (258,'DespeÃ±aderos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (259,'El Durazno',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (260,'El Manzano',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (261,'Embalse',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (262,'General Deheza',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (263,'General Levalle',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (264,'Hernando',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (265,'Huerta Grande',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (266,'Huinca Renanco',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (267,'Icho Cruz',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (268,'Intiyaco',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (269,'Ischilin',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (270,'James Craik',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (271,'Jesus Maria',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (272,'La Bolsa',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (273,'Laboulaye',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (274,'La Calera',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (275,'La Carlota',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (276,'La Cesira',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (277,'La Cruz',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (278,'La Cumbre',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (279,'La Cumbrecita',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (280,'La Falda',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (281,'La Granja',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (282,'La Paisanita',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (283,'La Paz Cordoba',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (284,'La Poblacion',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (285,'Las Albacas',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (286,'Las Caleras',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (287,'Las Calles',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (288,'La Serranita',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (289,'Las Rabonas',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (290,'Las Tapias',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (291,'Loma Bola',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (292,'Los Cocos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (293,'Los Condores',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (294,'Los Hornillos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (295,'Los Molinos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (296,'Los Pozos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (297,'Los Reartes',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (298,'Loza Corral',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (299,'Marcos Juarez',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (300,'Mayu Sumaj',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (301,'Mendiolaza',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (302,'Mina Clavero',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (303,'Miramar',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (304,'Molinari',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (305,'Monte Maiz',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (306,'Morteros',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (307,'Nono',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (308,'Oncativo',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (309,'Ongamira',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (310,'Panaholma',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (311,'Potrero de Garay',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (312,'Quilino',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (313,'Rio Ceballos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (314,'Rio Cuarto',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (315,'Rio de los Sauces',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (316,'Rio Tercero',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (317,'Saldan',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (318,'Salsacate',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (319,'Salsipuedes',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (320,'San A. de Arredondo',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (321,'San Carlos Minas',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (322,'San Clemente',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (323,'San Esteban',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (324,'San Francisco',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (325,'San Javier Traslasierra',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (326,'San Jose de la Dormida',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (327,'San Marcos Sierras',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (328,'San Roque',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (329,'Santa Cruz del Lago',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (330,'Santa Maria de Punilla',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (331,'Santa Monica',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (332,'Santa Rosa Calamuchita',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (333,'Sinsacate',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (334,'Tala Huasi',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (335,'Tancacha',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (336,'Tanti',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (337,'Unquillo',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (338,'Valle Hermoso',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (339,'Villa Alpina',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (340,'Villa Allende',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (341,'Villa Animi',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (342,'Villa Ascasubi',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (343,'Villa Berna',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (344,'Villa Carlos Paz',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (345,'Villa Ciudad America',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (346,'V. C. Pque. Los Reartes',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (347,'Villa Cura Brochero',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (348,'Villa de las Rosas',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (349,'Villa del Dique',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (350,'Villa de Soto',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (351,'Villa del Totoral',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (352,'Villa de Maria',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (353,'Villa Dolores',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (354,'Villa General Belgrano',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (355,'Villa Giardino',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (356,'Villa Los Aromos',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (357,'Villa Maria',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (358,'Villa Parque Siquiman',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (359,'Villa Rumipal',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (360,'Villa Tulumba',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (361,'Yacanto Calamuchita',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (362,'Yacanto Traslasierra',5);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (363,'Bella Vista',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (364,'Caa CatÃ­',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (365,'Colonia Pellegrini',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (366,'Corrientes Capital',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (367,'Curuzu Cuatia',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (368,'Empedrado',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (369,'Esquina',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (370,'Goya',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (371,'Ita Ibate',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (372,'Itati',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (373,'Ituzaingo',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (374,'La Cruz Corrientes',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (375,'Mburucuya',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (376,'Mercedes Corrientes',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (377,'Monte Caseros',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (378,'Paso de la Patria',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (379,'Paso de los Libres',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (380,'San Antonio de Apipe',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (381,'Santa Ana',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (382,'Santo Tome Corrientes',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (383,'Sauce',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (384,'Virasoro',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (385,'Yapeyu',6);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (386,'Basavilbaso',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (387,'Brazo Largo',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (388,'Chajari',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (389,'Colon',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (390,'C. del Uruguay',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (391,'Concordia',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (392,'Crespo',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (393,'Diamante',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (394,'Federacion',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (395,'Federal',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (396,'General Ramirez',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (397,'Gualeguay',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (398,'Gualeguaychu',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (399,'Hasenkamp',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (400,'Hernandarias',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (401,'Ibicuy',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (402,'La Paz',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (403,'Larroque',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (404,'Maria Grande',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (405,'Nogoya',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (406,'Parana',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (407,'Piedras Blancas',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (408,'Pueblo Liebig',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (409,'Puerto Yerua',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (410,'Puiggari',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (411,'Rosario del Tala',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (412,'San Jose de Feliciano',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (413,'San Salvador',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (414,'Santa Elena',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (415,'Urdinarrain',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (416,'Valle Maria',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (417,'Viale',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (418,'Victoria',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (419,'Villa Elisa',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (420,'Villaguay',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (421,'Villa Paranacito',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (422,'Villa San Jose',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (423,'Villa Urquiza',7);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (424,'Clorinda',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (425,'El Colorado',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (426,'Formosa Capital',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (427,'Gral. Manuel Belgrano',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (428,'Herradura',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (429,'Ibarreta',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (430,'Ingeniero Juarez',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (431,'Laguna Blanca',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (432,'Las Lomitas',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (433,'Mayor VillafaÃ±e',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (434,'Palo Santo',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (435,'Pirane',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (436,'San Francisco de Laishi',8);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (437,'Abra Pampa',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (438,'Aguas Calientes',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (439,'Caimancito',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (440,'Casabindo',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (441,'El Carmen',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (442,'Hornillos',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (443,'Huacalera',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (444,'Huichaira',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (445,'Humahuaca',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (446,'La Quiaca',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (447,'Libertador San Martin',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (448,'Lozano',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (449,'Maimara',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (450,'PalpalÃ¡',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (451,'Perico',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (452,'Purmamarca',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (453,'San Francisco',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (454,'San Pedro de Jujuy',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (455,'San Salvador de Jujuy',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (456,'Santa Catalina',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (457,'Susques',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (458,'Tilcara',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (459,'Tumbaya',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (460,'Uquia',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (461,'Valle Grande',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (462,'Villa JardÃ­n de Reyes',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (463,'Villamonte',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (464,'Volcan',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (465,'Yala',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (466,'Yavi',9);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (467,'Ataliva Roca',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (468,'Bernardo Larroude',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (469,'Casa de Piedra',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (470,'Carro Quemado',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (471,'Chacharramendi',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (472,'Colonia 25 de Mayo',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (473,'Colonia Baron',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (474,'Eduardo Castex',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (475,'General Acha',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (476,'General Pico',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (477,'General San Martin',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (478,'Guatrache',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (479,'Intendente Alvear',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (480,'Jacinto Arauz',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (481,'Macachin',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (482,'Rancul',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (483,'Realico',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (484,'Santa Isabel',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (485,'Santa Rosa La Pampa',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (486,'Toay',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (487,'Victorica',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (488,'Winifreda',10);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (489,'Aimogasta',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (490,'Aminga',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (491,'Anillaco',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (492,'Chamical',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (493,'Chepes',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (494,'Chilecito',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (495,'Famatina',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (496,'Guandacol',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (497,'La Rioja Capital',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (498,'Olta',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (499,'Pagancillo',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (500,'Patquia',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (501,'Sanagasta',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (502,'San Blas de Los Sauces',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (503,'Santa Teresita',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (504,'Tama',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (505,'Ulapes',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (506,'Villa Castelli',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (507,'Villa Union',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (508,'Vinchina',11);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (509,'CaÃ±on del Atuel',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (510,'Chacras de Coria',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (511,'Colonia Suiza',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (512,'El Nihuil',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (513,'El Sosneado',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (514,'General Alvear',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (515,'Godoy Cruz',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (516,'Guaymallen',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (517,'Junin',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (518,'Las Carditas',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (519,'Las Cuevas',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (520,'Las Heras',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (521,'Las Vegas',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (522,'Los Molles',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (523,'Los Reyunos',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (524,'Lujan de Cuyo',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (525,'Maipu',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (526,'Malargue',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (527,'Manzano Historico',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (528,'Mendoza Capital',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (529,'Potrerillos',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (530,'Rivadavia',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (531,'San Carlos',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (532,'San Martin',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (533,'San Rafael',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (534,'Tunuyan',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (535,'Tupungato',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (536,'Uspallata',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (537,'Valle de Uco',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (538,'Valle Grande',12);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (539,'2 de mayo',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (540,'25 de mayo',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (541,'Alba Posse',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (542,'Andresito',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (543,'Apostoles',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (544,'Aristobulo del Valle',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (545,'Bernardo de Irigoyen',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (546,'Campo Grande',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (547,'Campo Viera',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (548,'Candelaria',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (549,'Capiovi',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (550,'Caraguatay',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (551,'Colonia Victoria',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (552,'ConcepciÃ³n de la Sierra',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (553,'Corpus',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (554,'El Alcazar',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (555,'El Dorado',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (556,'El Soberbio',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (557,'Garupa',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (558,'Gobernador Roca',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (559,'Jardin America',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (560,'Leandro Alem',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (561,'Loreto',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (562,'Montecarlo',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (563,'Obera',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (564,'Panambi',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (565,'Posadas',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (566,'Puerto Esperanza',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (567,'Puerto Iguazu',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (568,'Puerto Libertad',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (569,'Puerto Mineral',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (570,'Puerto Piray',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (571,'Puerto Rico',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (572,'Salto Encantado',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (573,'San Antonio',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (574,'San Ignacio',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (575,'San Javier',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (576,'San Pedro',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (577,'Santa Ana',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (578,'Santa MarÃ­a',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (579,'Santa Rita',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (580,'San Vicente',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (581,'Tobuna',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (582,'Wanda',13);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (583,'Alumine',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (584,'Andacollo',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (585,'Arroyito',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (586,'Caviahue',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (587,'Centenario',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (588,'Chos Malal',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (589,'Copahue',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (590,'Cutral Co',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (591,'El Cholar',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (592,'El Huecu',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (593,'Huinganco',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (594,'Junin de los Andes',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (595,'Las Lajas',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (596,'Las Ovejas',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (597,'Loncopue',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (598,'Manzano Amargo',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (599,'Moquehue',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (600,'Neuquen Capital',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (601,'Picun Leufu',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (602,'Piedra del Aguila',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (603,'Plaza Huincul',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (604,'Plottier',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (605,'Primeros Pinos',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (606,'Pulmari',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (607,'RincÃ³n de los Sauces',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (608,'S. Martin de los Andes',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (609,'Tricao Malal',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (610,'Varvarco',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (611,'Villa El Chocon',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (612,'Villa La Angostura',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (613,'Villa Lago Meliquina',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (614,'Villa Pehuenia',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (615,'Villa Traful',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (616,'Zapala',14);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (617,'Allen',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (618,'Bariloche',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (619,'Catriel',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (620,'Choele Choel',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (621,'Cinco Saltos',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (622,'Cipolletti',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (623,'Dina Huapi',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (624,'El Bolson',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (625,'El Manso',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (626,'General Conesa',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (627,'General Roca',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (628,'Ingeniero Jacobacci',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (629,'Las Grutas',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (630,'Los Menucos',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (631,'Ministro Ramos Mexia',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (632,'Playas Doradas',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (633,'Rio Colorado',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (634,'San Antonio Este',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (635,'San Antonio Oeste',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (636,'Sierra Colorada',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (637,'Sierra Grande',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (638,'Valcheta',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (639,'Viedma',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (640,'Villa El Condor',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (641,'Villa Lago GutiÃ©rrez',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (642,'Villa Lago Mascardi',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (643,'Villa Regina',15);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (644,'Angastaco',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (645,'Cabra Corral',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (646,'Cachi',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (647,'Cafayate',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (648,'Campo Quijano',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (649,'Cerrillos',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (650,'Chicoana',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (651,'Coronel Moldes',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (652,'Embarcacion',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (653,'General Guemes',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (654,'General Mosconi',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (655,'Iruya',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (656,'Joaquin V. Gonzalez',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (657,'La Caldera',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (658,'La Poma',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (659,'Molinos',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (660,'Oran',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (661,'Rosario de la Frontera',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (662,'Salta Capital',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (663,'San A. de los Cobres',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (664,'San Carlos',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (665,'San Jose de Metan',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (666,'Santa Rosa',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (667,'Seclantas',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (668,'Tartagal',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (669,'Tolar Grande',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (670,'Vaqueros',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (671,'Villa San Lorenzo',16);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (672,'Barreal',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (673,'Bella Vista',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (674,'Calingasta',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (675,'Caucete',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (676,'Iglesia',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (677,'Jachal',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (678,'Las Flores',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (679,'Pismanta',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (680,'Rawson',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (681,'Rivadavia',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (682,'Rodeo',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (683,'San Juan Capital',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (684,'Santa Lucia',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (685,'Tudcum',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (686,'Ullum',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (687,'Valle Fertil',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (688,'Vallecito',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (689,'Zonda',17);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (690,'Balde',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (691,'Carpinteria',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (692,'Concaran',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (693,'Cortaderas',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (694,'El Morro',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (695,'El Trapiche',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (696,'El Volcan',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (697,'Juana Koslay',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (698,'La Carolina',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (699,'La Florida',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (700,'La Punta',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (701,'La Toma',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (702,'Los Molles',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (703,'Lujan San Luis',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (704,'Merlo',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (705,'Nogoli',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (706,'Nueva Galia',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (707,'Papagayos',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (708,'Potrero de los Funes',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (709,'Quines',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (710,'Renca',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (711,'S. Francisco del Monte',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (712,'San Geronimo',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (713,'San Luis Capital',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (714,'Santa Rosa del Conlara',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (715,'Sierra de las Quijadas',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (716,'Tilisarao',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (717,'Villa de la Quebrada',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (718,'Villa Elena',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (719,'Villa Larca',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (720,'Villa Mercedes',18);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (721,'28 de noviembre',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (722,'Caleta Olivia',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (723,'Cte. Piedra Buena',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (724,'El Calafate',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (725,'El Chalten',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (726,'Fitz Roy',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (727,'Gobernador Gregores',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (728,'Hipolito Yrigoyen',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (729,'Jaramillo',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (730,'Las Heras',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (731,'Los Antiguos',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (732,'Perito Moreno',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (733,'Pico Truncado',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (734,'Puerto Deseado',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (735,'Puerto San Julian',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (736,'Puerto Santa Cruz',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (737,'Rio Gallegos',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (738,'Rio Turbio',19);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (739,'Alejandra',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (740,'Armstrong',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (741,'Arocena',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (742,'Arroyo Seco',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (743,'Arroyo Leyes',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (744,'Avellaneda',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (745,'Barrancas',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (746,'CarcaraÃ±a',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (747,'Casilda',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (748,'Cayasta',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (749,'CaÃ±ada de Gomez',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (750,'Ceres',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (751,'Chabas',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (752,'Coronda',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (753,'Desvio Arijon',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (754,'Elortondo',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (755,'Esperanza',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (756,'Firmat',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (757,'Florencia',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (758,'Franck',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (759,'Funes',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (760,'Granadero Baigorria',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (761,'Helvecia',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (762,'Melincue',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (763,'Monje',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (764,'Oliveros',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (765,'Puerto Gaboto',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (766,'Rafaela',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (767,'Reconquista',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (768,'Romang',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (769,'Rosario',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (770,'Rufino',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (771,'San Carlos',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (772,'San Cristobal',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (773,'San Javier',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (774,'San Jorge',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (775,'San Jose del Rincon',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (776,'San Justo',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (777,'San Lorenzo',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (778,'Santa Fe Capital',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (779,'Sta. Rosa de Calchines',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (780,'Santo Tome',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (781,'Sastre',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (782,'Sauce Viejo',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (783,'Sunchales',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (784,'Timbues',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (785,'Tostado',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (786,'Venado Tuerto',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (787,'Villa CaÃ±as',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (788,'Villa Constitucion',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (789,'Villa Ocampo',20);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (790,'AÃ±atuya',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (791,'Bandera',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (792,'Frias',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (793,'La Banda',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (794,'Pinto',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (795,'Sgo. del Estero Capital',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (796,'Termas de Rio Hondo',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (797,'Villa La Punta',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (798,'Villa Ojo de Agua',21);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (799,'Rio Grande',22);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (800,'Tolhuin',22);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (801,'Ushuaia',22);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (802,'Alberdi',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (803,'Amaicha del Valle',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (804,'Ampimpa',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (805,'Burruyacu',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (806,'Colalao del Valle',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (807,'Concepcion',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (808,'El Cadillal',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (809,'El Mollar',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (810,'El Siambon',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (811,'Famailla',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (812,'Raco',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (813,'Ruinas de Quilmes',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (814,'San Javier Tucuman',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (815,'San Miguel de Tucuman',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (816,'San Pedro de Colalao',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (817,'Simoca',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (818,'Taco Ralo',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (819,'Tafi del Valle',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (820,'Tafi Viejo',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (821,'Villa Nougues',23);
+INSERT INTO localidades(`id_localidad`,`nombre`,`provincia`) VALUES (822,'Yerba Buena',23);
+
+/*
+-- Query: SELECT * FROM productos
+-- Date: 2023-04-29 18:40
+*/
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (1,1,4,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (2,1,12,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (3,1,18,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (4,1,15,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (5,1,10,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (6,2,17,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (7,3,2,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (8,3,3,1800.00,1500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (9,3,5,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (10,3,9,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (11,4,2,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (12,4,3,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (13,4,5,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (14,4,9,2040.00,1700.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (15,5,3,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (16,5,6,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (17,5,7,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (18,6,1,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (19,6,3,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (20,6,5,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (21,7,2,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (22,7,3,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (23,7,9,2400.00,2000.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (24,8,2,2400.00,2000.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (25,8,3,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (26,8,9,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (27,9,2,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (28,9,3,1920.00,1600.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (29,10,17,1920.00,1600.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (30,10,10,1920.00,1600.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (31,10,14,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (32,11,2,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (33,11,3,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (34,11,9,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (35,12,1,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (36,12,2,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (37,12,3,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (38,12,6,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (39,12,7,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (40,12,8,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (41,13,12,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (42,13,10,2280.00,1900.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (43,13,14,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (44,14,16,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (45,15,4,2160.00,1800.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (46,15,12,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (47,15,13,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (48,15,16,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (49,15,18,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (50,15,17,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (51,15,10,2520.00,2100.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (52,15,14,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (53,16,11,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (54,17,1,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (55,17,2,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (56,17,3,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (57,18,13,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (58,18,19,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (59,18,11,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (60,19,14,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (61,20,13,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (62,20,15,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (63,20,19,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (64,20,11,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (65,20,14,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (66,21,2,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (67,21,3,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (68,21,9,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (69,22,1,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (70,22,2,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (71,22,3,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (72,22,6,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (73,22,7,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (74,22,8,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (75,23,1,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (76,23,2,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (77,23,3,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (78,23,6,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (79,23,7,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (80,23,8,3000.00,2500.00);
+INSERT INTO productos(`id_productos`,`denominación`,`artículo`,`precio_unitario`,`costo_unitario`) VALUES (81,24,16,3000.00,2500.00);
+
+/*
+-- Query: SELECT * FROM provincia
+-- Date: 2023-04-29 18:43
+*/
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (1,'Buenos Aires');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (2,'Catamarca');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (3,'Chaco');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (4,'Chubut');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (5,'Cordoba');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (6,'Corrientes');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (7,'Entre Rios');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (8,'Formosa');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (9,'Jujuy');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (10,'La Pampa');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (11,'La Rioja');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (12,'Mendoza');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (13,'Misiones');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (14,'Neuquen');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (15,'Rio Negro');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (16,'Salta');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (17,'San Juan ');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (18,'San Luis');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (19,'Santa Cruz');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (20,'Santa Fe');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (21,'Santiago del Estero');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (22,'Tierra del Fuego');
+INSERT INTO provincia(`id_provincia`,`nombre`) VALUES (23,'Tucuman');
+
+/*
+-- Query: SELECT * FROM talles
+-- Date: 2023-04-29 18:48
+*/
+INSERT INTO talles(`id_talle`,`número`) VALUES (1,'18 a 26');
+INSERT INTO talles(`id_talle`,`número`) VALUES (2,'18 a 34');
+INSERT INTO talles(`id_talle`,`número`) VALUES (3,'20 a 34');
+INSERT INTO talles(`id_talle`,`número`) VALUES (4,'23 a 34');
+INSERT INTO talles(`id_talle`,`número`) VALUES (5,'25 a 33');
+INSERT INTO talles(`id_talle`,`número`) VALUES (6,'27 a 33');
+INSERT INTO talles(`id_talle`,`número`) VALUES (7,'27 a 34');
+
+/*
+-- Query: SELECT * FROM ventas
+-- Date: 2023-04-29 18:50
+*/
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (1,'2021-04-16',372600.00,230,0.10,4,79,3,5);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (2,'2020-05-09',171000.00,100,0.05,7,4,1,9);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (3,'2021-01-16',160200.00,100,0.11,20,8,1,10);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (4,'2020-05-06',1193400.00,650,0.10,5,37,1,1);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (5,'2021-08-03',903960.00,450,0.07,1,15,2,3);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (6,'2023-01-02',1319760.00,650,0.06,17,13,3,4);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (7,'2021-04-14',592800.00,260,0.05,20,64,3,2);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (8,'2020-10-02',866400.00,400,0.05,16,19,1,5);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (9,'2023-03-14',814416.00,380,0.06,10,81,1,9);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (10,'2023-03-30',779760.00,380,0.05,25,1,2,4);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (11,'2022-10-17',394128.00,170,0.08,4,63,1,1);
+INSERT INTO ventas(`id_ventas`,`fecha`,`monto`,`cantidad`,`descuentos`,`clientes`,`productos`,`stock`,`viajantes`) VALUES (12,'2020-05-03',1010100.00,370,0.09,20,2,3,4);
+
+/*
+-- Query: SELECT * FROM viajantes
+-- Date: 2023-04-29 18:53
+*/
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (1,'Neira','Luis Antonio',30299160,'20374568905','1982-03-13','','5209385029839',120000.00,'COL. EX NORMAL TUXTEPEC',34,3);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (2,'Nieto','Rodiguez',39903700,'20107895605','1971-09-26','vivianagarridon@hotmail.com','5233398987345',140000.00,'AV. INDEPENDENCIA NO 241',208,2);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (3,'Oviedo','Cenobia',4506883,'20235780915','1985-04-20','ggedies@hotmail.com','5294848732733',95000.00,'AV. INDEPENDENCIA NO 779',240,3);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (4,'Osmar','Payero',13964050,'20278885655','1970-02-14','','5256086967111',89000.00,'AV. 20 DE NOVIEMBRE NO1024',390,5);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (5,'Alvaro','Mora Mir',33096111,'20135477895','1996-04-26','carlos.goldsack@nismar.cl','5200482090949',175000.00,'CARRETERA A LOMA ALTA 2641',458,5);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (6,'Julio','Morata',36255395,'20187899995','1978-05-29','','5284838340049',166000.00,'AV. 20 DE NOVIEMBRE NO 1060',497,8);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (7,'Diego','Trelles',25609258,'20267779995','1973-11-30','mgoldsackz@gmail.com','5258058048483',78000.00,'CALLE ZARAGOZA NO 1010',529,10);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (8,'Raul','Lopez Nieto',21357305,'20163328905','1965-11-03','ggomara@bancoestado.cl','5240490349340',98500.00,'CALLE MATAMOROS NO 310',608,6);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (9,'Cristian','Zurita',10358314,'20199800985','1994-09-18','xicagogo@yahoo.es','5248383804804',204500.00,'AV. 20 DE NOVIEMBRE NO 859 B',704,9);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (10,'Edgardo','Fuentes',36539496,'20309112345','1993-08-18','dgomezl@bancochile.cl','5248378408282',133500.00,'AV. 20 DE NOVIEMBRE NO 1053',819,7);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (11,'Serafin','Garcia',26954783,'20309632045','1970-05-16','','5248378456982',120000.00,'GUARDIA VIEJA 989',702,1);
+INSERT INTO viajantes(`id_viajante`,`nombre`,`apellido`,`dni`,`cuit`,`fecha_nacimiento`,`email`,`teléfono`,`salario`,`domicilio`,`localidad`,`zona`) VALUES (12,'Maria','Apolito',21598456,'20309132845','1980-06-18','','5248353498282',110000.00,'ESTANCIA LACAMBRA 856 ',777,4);
+
+# MOODIFICACIONES DE LAS TABLAS
+# TABLA PROVEEDORES
+	ALTER TABLE proveedores
+	ADD FOREIGN KEY(localidad) REFERENCES localidades(id_localidad);
+    
+    ALTER TABLE proveedores
+    ADD FOREIGN KEY(insumos) REFERENCES insumos(id_insumos);
+
+# TABLA INSUMOS
+	ALTER TABLE insumos
+	ADD FOREIGN KEY(sector) REFERENCES sectores(id_sector);
+    
+# TABLA VENTAS
+	ALTER TABLE ventas
+	ADD FOREIGN KEY(clientes) REFERENCES clientes(id_clientes);
+
+	ALTER TABLE ventas
+	ADD FOREIGN KEY(productos) REFERENCES productos(id_productos);
+
+	ALTER TABLE ventas
+	ADD FOREIGN KEY(stock) REFERENCES stock(id_stock);
+    
+    ALTER TABLE ventas
+    ADD FOREIGN KEY(viajantes) REFERENCES viajantes(id_viajante);
+       
+# TABLA FACTURACIÓN_VENTAS
+	ALTER TABLE facturación_ventas
+	ADD FOREIGN KEY(cliente) REFERENCES clientes(id_clientes);
+
+# TABLA FACTURACIÓN_PROVEEDORES
+	ALTER TABLE facturación_proveedores
+	ADD FOREIGN KEY(proveedor) REFERENCES proveedores(id_proveedores);
+
+# TABLA FACTURACIÓN_APARADORES
+	ALTER TABLE facturación_aparadores
+    ADD FOREIGN KEY(aparador) REFERENCES aparadores(id_aparador);
+
+# TABLA EMPLEADOS
+	ALTER TABLE empleados
+	ADD FOREIGN KEY(localidad) REFERENCES localidades(id_localidad);    
+    
+	ALTER TABLE empleados
+	ADD FOREIGN KEY(sector) REFERENCES sectores(id_sector);
+    
+    UPDATE empleados
+    SET dni = 24284115
+    WHERE id_empleados = 19;
+    
+# TABLA PRODUCTOS
+	ALTER TABLE productos
+	ADD FOREIGN KEY(denominación) REFERENCES denominaciones(id_denominación);
+    
+    ALTER TABLE productos
+    ADD FOREIGN KEY(artículo) REFERENCES artículos(id_artículo);
+    
+# TABLA CLIENTES
+	ALTER TABLE clientes
+	ADD FOREIGN KEY(localidad) REFERENCES localidades(id_localidad);
+    
+    ALTER TABLE clientes
+    ADD FOREIGN KEY(viajante) REFERENCES viajantes(id_viajante);
+    
+# TABLA APARADORES
+	ALTER TABLE aparadores
+	ADD FOREIGN KEY(localidad) REFERENCES localidades(id_localidad);
+
+	ALTER TABLE aparadores
+    ADD FOREIGN KEY(insumos) REFERENCES insumos(id_insumos);
+    
+# TABLA VIAJANTES
+	ALTER TABLE viajantes
+	ADD FOREIGN KEY(localidad) REFERENCES localidades(id_localidad);
+    
+	ALTER TABLE viajantes
+	ADD FOREIGN KEY(zona) REFERENCES zonas(id_zona);
+    
+# TABLA LOCALIDADES
+	ALTER TABLE localidades
+    ADD FOREIGN KEY(provincia) REFERENCES provincia(id_provincia);
+    
+# TABLA TALLES
+	ALTER TABLE talles
+	MODIFY COLUMN número VARCHAR(30) NOT NULL;
+    
+# TABLA ARTÍCULOS    
+	ALTER TABLE artículos
+    ADD FOREIGN KEY(talle) REFERENCES talles(id_talle);
+
+# CREACIÓN DE VISTAS    
+# 1- NOMBRE Y APELLIDO DE CLIENTES QUE REGISTRAN DEUDAS
+CREATE OR REPLACE VIEW clientes_morosos AS
+(SELECT c.nombre, c.apellido, c.teléfono, c.email, c.localidad, fv.composición_de_deuda
+FROM clientes c 
+JOIN facturación_ventas fv ON (c.id_clientes = fv.cliente)
+WHERE fv.composición_de_deuda != 0
+);
+
+SELECT * FROM clientes_morosos;
+
+# 2 - NOMBRE Y APELLIDO DE EMPLEADOS CON UN SALARIO MENOR A $100.000
+CREATE OR REPLACE VIEW empleados_100k AS
+(SELECT nombre, apellido, salario, cuit, fecha_nacimiento, sector, localidad
+FROM empleados
+WHERE salario < 100000
+);
+
+SELECT * FROM empleados_100k;
+
+# 3 - PRODUCTOS QUE CONTENGAN 'DINO' EN SU DENOMINACIÓN
+CREATE OR REPLACE VIEW productos_dino AS
+(SELECT * FROM denominaciones
+WHERE nombre like 'Dino%'
+);
+
+SELECT * FROM productos_dino;
+
+# 4 - MONTO VENDIDO DE LOS PRODUCTOS CON FALLAS
+CREATE OR REPLACE VIEW monto_productos_fallas AS
+ (SELECT v.id_ventas, v.fecha, v.monto, v.productos
+ FROM ventas v
+ LEFT JOIN stock s ON (v.stock = s.id_stock)
+ WHERE id_stock = 3
+ );
+ 
+ SELECT * FROM monto_productos_fallas;
+
+# 5 - VENTAS POR ZONA
+CREATE OR REPLACE VIEW ventas_x_zona AS
+(SELECT ve.id_ventas, ve.fecha, ve.monto, ve.cantidad, ve.clientes id_cliente, vi.nombre nombre_viajante, vi.apellido apellido_viajante, z.nombre zona
+FROM ventas ve
+JOIN viajantes vi ON (ve.viajantes = vi.id_viajante)
+JOIN zonas z ON (vi.zona = z.id_zona)
+WHERE ve.monto != 0
+);
+
+SELECT * FROM ventas_x_zona;
+
+# 6 - TOP 10 PRODUCTOS MÁS VENDIDOS
+CREATE OR REPLACE VIEW top10_productos AS
+(SELECT p.id_productos, v.monto
+FROM productos p
+JOIN ventas v ON (p.id_productos = v.productos)
+ORDER BY monto DESC
+LIMIT 10
+);
+
+SELECT * FROM top10_productos;
+
+# 7 - NOMBRE Y APELLIDO DE LOS VIAJANTES QUE HAYAN LOGRADO VENTAS MAYORES O IGUALES A $500.000
+CREATE OR REPLACE VIEW ventas_mayores_500k AS
+	(SELECT vi.nombre, vi.apellido, ve.fecha, ve.monto, ve.cantidad, ve.clientes, ve.productos
+     FROM ventas ve
+     INNER JOIN viajantes vi ON (ve.viajantes = vi.id_viajante)
+     WHERE ve.monto >= 500000
+     );
+
+SELECT * FROM ventas_mayores_500k;
+
+# CREACIÓN DE FUNCIONES
+# 1 - DETERMINAR LA CATEGORÍA DEL SALARIO EN "BAJO", "MEDIO" O "ALTO", SEGÚN CUMPLA X VALOR EN $.
+DELIMITER $$
+CREATE FUNCTION `tipo_salario`(salario INT) RETURNS VARCHAR(30)
+DETERMINISTIC
+BEGIN
+DECLARE tipo VARCHAR(30);
+
+CASE
+	WHEN salario < 115000 THEN
+    SET tipo = 'bajo';
+	WHEN salario < 150000 THEN
+	SET tipo = 'medio';
+	ELSE
+    SET tipo = 'alto';
+END CASE;
+
+RETURN tipo;
+END
+$$
+
+DELIMITER ;
+SELECT purinky_dw.tipo_salario(170000) AS Tipo_de_salario;
+
+# 2 - CONTAR LOS PRODUCTOS EN BASE A SU DENOMINACIÓN
+DELIMITER $$
+CREATE FUNCTION contar_productos(denominación INT) RETURNS INT
+DETERMINISTIC
+BEGIN
+  DECLARE total INT;
+  SET total = (
+    SELECT COUNT(*) 
+    FROM productos 
+    WHERE productos.denominación = denominación);
+  RETURN total;
+END
+$$
+
+DELIMITER ;
+SELECT contar_productos(6) AS cantidad_productos;
+
+# 3 - NOMBRE DE LOS INSUMOS UTILIZADOS POR CADA APARADOR
+DELIMITER //
+CREATE FUNCTION insumos_nombre (p_id_insumos INT) RETURNS VARCHAR(20)
+READS SQL DATA
+BEGIN
+	DECLARE resultado VARCHAR(20);
+    SET resultado = (SELECT nombre
+					 FROM insumos
+					 WHERE id_insumos = p_id_insumos);
+	RETURN resultado;
+END //
+DELIMITER ;
+
+SELECT insumos_nombre(4) AS nombre_insumo;
+
+# CONSULTA DINÁMICA
+SELECT id_aparador, nombre, domicilio, insumos_nombre(id_aparador) AS nombre_insumo FROM aparadores;
+
+# CREACIÓN DE STORED PROCEDURES
+# 1 - SP QUE ACTUALIZA LOS PRECIOS DE LOS PRODUCTOS ENVIADOS COMO PRIMER PARÁMETRO CON EL VALOR ENVIADO COMO SEGUNDO PARÁMETRO.
+DELIMITER //
+CREATE PROCEDURE sp_precios_actualizados(
+	IN producto_precioanterior DECIMAL(6, 2),
+    IN producto_precionuevo DECIMAL(6, 2))
+BEGIN
+	UPDATE productos 
+    SET precio_unitario = producto_precionuevo
+	WHERE precio_unitario = producto_precioanterior;
+ END //
+DELIMITER ;
+
+SET sql_safe_updates=0;
+
+CALL sp_precios_actualizados(1800, 2200);
+SELECT * FROM productos;
+
+# 2 - SP QUE INDICANDO EL SECTOR AL CUAL PERTENECE, RETORNA EL PROMEDIO DE SUELDO DE LOS EMPLEADOS Y EL MÁXIMO DE LOS MISMOS.
+DELIMITER $$
+CREATE PROCEDURE sp_sector(
+	IN p_sector INT,
+    OUT promedio FLOAT,
+    OUT mayor FLOAT)
+BEGIN
+	SELECT AVG(salario) INTO promedio
+    FROM empleados
+    WHERE sector = p_sector;
+    SELECT MAX(salario) INTO mayor
+    FROM empleados
+    WHERE sector = p_sector;
+END $$
+DELIMITER ;
+
+CALL sp_sector(2, @p, @m);
+SELECT @p, @m;
+
+# 3 - SP QUE INSERTA EL NOMBRE DEL NUEVO INSUMO ADQUIRIDO
+DELIMITER //
+CREATE PROCEDURE sp_nombre_insumos(
+	IN i_nombre VARCHAR(20),
+    IN s_nombre INT)
+BEGIN
+	INSERT INTO insumos(id_insumos, nombre, sector) VALUES(NULL, i_nombre, s_nombre);
+END //
+DELIMITER ;
+
+DELETE FROM sectores
+WHERE id_insumos = 13;
+
+CALL sp_nombre_insumos('cuero', '1');
+SELECT * FROM insumos;
+
+# 4 - SP QUE CUENTA LOS PRODUCTOS DENOMINADOS.
+DELIMITER //
+CREATE PROCEDURE sp_contar_productos_denominados(
+	IN p_denominación INT,
+	OUT p_total INT)
+BEGIN 
+	SET p_total = (SELECT COUNT(*)
+				   FROM productos
+				   WHERE denominación = p_denominación);
+END //
+DELIMITER ;
+
+CALL sp_contar_productos_denominados(1, @p_total);
+SELECT @p_total;
+
+# CREACIÓN DE TRIGGERS
+# 1 - TRIGGER DE INSERCIÓN DE REGISTROS PARA AUDITORÍA
+CREATE TRIGGER tr_insert_ventas_aud
+AFTER INSERT ON ventas
+FOR EACH ROW
+INSERT INTO AUDITS_ventas(entity, entity_id, insert_dt, created_by, last_update_dt, last_updated_by) 
+VALUES ('ventas', NEW.id_ventas, CURRENT_TIMESTAMP(), USER(), CURRENT_TIMESTAMP(), USER());
+
+INSERT INTO ventas (id_ventas, fecha, monto, cantidad, descuentos, clientes, productos, stock, viajantes) 
+VALUES (NULL,'2023-06-21',930000.00,78,0,14,3,1,5);
+
+SELECT * FROM ventas;
+SELECT * FROM audits_ventas;
+
+# 2 - TRIGGER DE ACTUALIZACIÓN DE REGISTROS PARA AUDITORÍA
+CREATE TRIGGER tr_update_ventas_aud
+AFTER UPDATE ON ventas
+FOR EACH ROW
+UPDATE audits_ventas SET last_update_dt = CURRENT_TIMESTAMP(), last_updated_by = USER() 
+WHERE entity_id = OLD.id_ventas;
+
+UPDATE ventas SET cantidad = 22 WHERE id_ventas = 13;
+
+SELECT * FROM audits_ventas;
+
+# 3 - TRIGGER QUE OTORGUE UN 10 % DE BONIFICACIÓN A LOS CLIENTES QUE SUPEREN LOS $400.000 EN UNA COMPRA
+DELIMITER $$
+CREATE TRIGGER bonificación_venta
+BEFORE INSERT ON ventas
+FOR EACH ROW 
+BEGIN
+    IF NEW.monto > 400000 THEN
+	SET NEW.descuentos = 0.10;
+    END IF; 
+END $$
+DELIMITER ;
+
+INSERT INTO ventas(id_ventas, fecha, monto, cantidad, clientes, productos, stock, viajantes)
+VALUES (NULL,'2023-02-11',450000.00,310, 5, 4, 2, 3);
+
+SELECT * FROM ventas;
